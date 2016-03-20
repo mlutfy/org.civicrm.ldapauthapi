@@ -1,20 +1,33 @@
-This extension improves the default search in several ways:
-- more efficient requests
-- search in the start of the names instead of in the middle (first or last)
-- adjust based on the length of the query and the number of results to do the query(ies) that are the most efficient
+CiviCRM LDAP API Auth
+=====================
 
-Give it a go and let me know what you think of the result.
+This extension provides the duct tape to run LDAP authentication on Drupal
+using LdapJS (http://ldapjs.org/). This extension does not provide any new
+feature to CiviCRM, it merely uses the CiviCRM API because we are CiviCRM
+developers so it was technically easier to implement.
 
-## Tips and trick ##
-If you search for a number (eg. 42) it won't find any contact, but if you press enter, it will directly go to the contact view for this contact id.
+Some services, such as the CiviCRM wiki, rely on this pseudo-LDAP
+authentification in order to centralize account creation on CiviCRM.org.
+However, CiviCRM.org is not running on top of LDAP, and a source which
+prefers to remain anonymous was not too keen on setting up a new OpenLDAP
+server for this purpose (which would have been the clean, but complicated
+way to do it), so we duct-taped it with LdapJS.
 
-It will not waste resources searching for the first 2 chars, so you won't get all the "x", then all the "xa" before getting all the "xav". 3 letters seems to be the right lenght for my users (between 3k and 100k contacts).
+Once enabled, this extension provides two APIs that can be queried by LdapJS:
 
-if you type @gmai or .com it will seek them in the email
-## Implementation ##
-The existing hook for the autocomplete is at the database level.  This means that it either forces you to create a tempory table or to limit yourself to a single query.
+* Contact.Authenticate (password authentication for a bind)
+* Contact.Getfromuf (search)
 
-This extension creates a new getttpquick API action, that is used instead of the default autocomplete. This leverages the existing crmAutocomplete javascript.
+This extension is based on the excellent ldapcivi+qlookup extensions by
+Xavier Dutoit:
 
-## Adjust the width ##
-If < 4.2.8 and if you want to adjust the width of the result, you need to apply this patch CRM-11624 the http://issues.civicrm.org/jira/secure/attachment/18970/setwidth.patch 
+* https://github.com/TechToThePeople/ldapcivi
+* https://civicrm.org/extensions/quick-contact-autocomplete
+
+License
+-------
+
+(C) 2016 CiviCRM LLC
+(C) 2014-2016 Xavier Dutoit
+
+GNU AGPLv3. See LICENSE.txt.

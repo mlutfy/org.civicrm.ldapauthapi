@@ -5,7 +5,7 @@
 /**
  * (Delegated) Implementation of hook_civicrm_config
  */
-function _qlookup_civix_civicrm_config(&$config = NULL) {
+function _ldapauthapi_civix_civicrm_config(&$config = NULL) {
   static $configured = FALSE;
   if ($configured) return;
   $configured = TRUE;
@@ -30,7 +30,7 @@ function _qlookup_civix_civicrm_config(&$config = NULL) {
  *
  * @param $files array(string)
  */
-function _qlookup_civix_civicrm_xmlMenu(&$files) {
+function _ldapauthapi_civix_civicrm_xmlMenu(&$files) {
   foreach (glob(__DIR__ . '/xml/Menu/*.xml') as $file) {
     $files[] = $file;
   }
@@ -39,9 +39,9 @@ function _qlookup_civix_civicrm_xmlMenu(&$files) {
 /**
  * Implementation of hook_civicrm_install
  */
-function _qlookup_civix_civicrm_install() {
-  _qlookup_civix_civicrm_config();
-  if ($upgrader = _qlookup_civix_upgrader()) {
+function _ldapauthapi_civix_civicrm_install() {
+  _ldapauthapi_civix_civicrm_config();
+  if ($upgrader = _ldapauthapi_civix_upgrader()) {
     return $upgrader->onInstall();
   }
 }
@@ -49,9 +49,9 @@ function _qlookup_civix_civicrm_install() {
 /**
  * Implementation of hook_civicrm_uninstall
  */
-function _qlookup_civix_civicrm_uninstall() {
-  _qlookup_civix_civicrm_config();
-  if ($upgrader = _qlookup_civix_upgrader()) {
+function _ldapauthapi_civix_civicrm_uninstall() {
+  _ldapauthapi_civix_civicrm_config();
+  if ($upgrader = _ldapauthapi_civix_upgrader()) {
     return $upgrader->onUninstall();
   }
 }
@@ -59,9 +59,9 @@ function _qlookup_civix_civicrm_uninstall() {
 /**
  * (Delegated) Implementation of hook_civicrm_enable
  */
-function _qlookup_civix_civicrm_enable() {
-  _qlookup_civix_civicrm_config();
-  if ($upgrader = _qlookup_civix_upgrader()) {
+function _ldapauthapi_civix_civicrm_enable() {
+  _ldapauthapi_civix_civicrm_config();
+  if ($upgrader = _ldapauthapi_civix_upgrader()) {
     if (is_callable(array($upgrader, 'onEnable'))) {
       return $upgrader->onEnable();
     }
@@ -71,9 +71,9 @@ function _qlookup_civix_civicrm_enable() {
 /**
  * (Delegated) Implementation of hook_civicrm_disable
  */
-function _qlookup_civix_civicrm_disable() {
-  _qlookup_civix_civicrm_config();
-  if ($upgrader = _qlookup_civix_upgrader()) {
+function _ldapauthapi_civix_civicrm_disable() {
+  _ldapauthapi_civix_civicrm_config();
+  if ($upgrader = _ldapauthapi_civix_upgrader()) {
     if (is_callable(array($upgrader, 'onDisable'))) {
       return $upgrader->onDisable();
     }
@@ -89,17 +89,17 @@ function _qlookup_civix_civicrm_disable() {
  * @return mixed  based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
  *                for 'enqueue', returns void
  */
-function _qlookup_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  if ($upgrader = _qlookup_civix_upgrader()) {
+function _ldapauthapi_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+  if ($upgrader = _ldapauthapi_civix_upgrader()) {
     return $upgrader->onUpgrade($op, $queue);
   }
 }
 
-function _qlookup_civix_upgrader() {
-  if (!file_exists(__DIR__.'/CRM/Qlookup/Upgrader.php')) {
+function _ldapauthapi_civix_upgrader() {
+  if (!file_exists(__DIR__.'/CRM/Ldapauthapi/Upgrader.php')) {
     return NULL;
   } else {
-    return CRM_Qlookup_Upgrader_Base::instance();
+    return CRM_Ldapauthapi_Upgrader_Base::instance();
   }
 }
 
@@ -110,7 +110,7 @@ function _qlookup_civix_upgrader() {
  * @param $pattern string, glob pattern, eg "*.txt"
  * @return array(string)
  */
-function _qlookup_civix_find_files($dir, $pattern) {
+function _ldapauthapi_civix_find_files($dir, $pattern) {
   $todos = array($dir);
   $result = array();
   while (!empty($todos)) {
@@ -138,13 +138,13 @@ function _qlookup_civix_find_files($dir, $pattern) {
  *
  * Find any *.mgd.php files, merge their content, and return.
  */
-function _qlookup_civix_civicrm_managed(&$entities) {
-  $mgdFiles = _qlookup_civix_find_files(__DIR__, '*.mgd.php');
+function _ldapauthapi_civix_civicrm_managed(&$entities) {
+  $mgdFiles = _ldapauthapi_civix_find_files(__DIR__, '*.mgd.php');
   foreach ($mgdFiles as $file) {
     $es = include $file;
     foreach ($es as $e) {
       if (empty($e['module'])) {
-        $e['module'] = 'eu.tttp.qlookup';
+        $e['module'] = 'eu.tttp.ldapauthapi';
       }
       $entities[] = $e;
     }
